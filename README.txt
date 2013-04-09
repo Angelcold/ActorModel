@@ -12,6 +12,11 @@ via futures.)
 For now see the tests found here to for how the various
 actor features work: LocalMailboxActorMessagingTest
 
+Tests take time (some 5-10 seconds) because they focus
+on timing large numbers of message sends. When you run
+the Gradle build be patient while the tests execute.
+There's nothing wrong when you see the test runner pause.
+
 I intend to release additional features including multi-
 node grid support and various key-value and event
 sourcing actor persistence mechanisms. That's going to
