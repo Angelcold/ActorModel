@@ -209,7 +209,7 @@ public abstract class BaseActor implements Actor {
 	 */
 	@Override
 	public ActorAgent self() {
-		return NullActorAgent.instance();
+		return this.registry().actorAgentFor(this);
 	}
 
 	/**

@@ -53,4 +53,10 @@ public class ArrayMessage<T> implements Message {
 	public final T[] values() {
 		return (T[]) this.values.toArray();
 	}
+
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName()
+				+ " [values=" + values + ", occurredOn=" + occurredOn + "]";
+	}
 }

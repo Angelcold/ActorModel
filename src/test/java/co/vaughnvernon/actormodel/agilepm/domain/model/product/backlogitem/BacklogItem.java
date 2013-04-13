@@ -1,8 +1,10 @@
 package co.vaughnvernon.actormodel.agilepm.domain.model.product.backlogitem;
 
-import co.vaughnvernon.actormodel.actor.BaseActor;
+import co.vaughnvernon.actormodel.actor.ActorAgent;
 import co.vaughnvernon.actormodel.actor.ActorInitializer;
+import co.vaughnvernon.actormodel.actor.BaseActor;
 import co.vaughnvernon.actormodel.message.Message;
+import co.vaughnvernon.actormodel.message.StringMessage;
 
 public class BacklogItem extends BaseActor {
 
@@ -14,6 +16,8 @@ public class BacklogItem extends BaseActor {
 
 		this.story = anInitializer.getParameter("story");
 		this.summary = anInitializer.getParameter("summary");
+
+		((ActorAgent)anInitializer.getParameter("product")).tell(new StringMessage("BacklogItem got your message."));
 	}
 
 	@Override

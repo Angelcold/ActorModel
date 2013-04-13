@@ -36,4 +36,10 @@ public class SimpleMessage<T> implements Message {
 	public final T value() {
 		return this.value;
 	}
+
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName()
+				+ " [value=" + value + ", occurredOn=" + occurredOn + "]";
+	}
 }

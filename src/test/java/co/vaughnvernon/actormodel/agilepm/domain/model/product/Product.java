@@ -1,8 +1,8 @@
 package co.vaughnvernon.actormodel.agilepm.domain.model.product;
 
-import co.vaughnvernon.actormodel.actor.BaseActor;
 import co.vaughnvernon.actormodel.actor.ActorAgent;
 import co.vaughnvernon.actormodel.actor.ActorInitializer;
+import co.vaughnvernon.actormodel.actor.BaseActor;
 import co.vaughnvernon.actormodel.agilepm.domain.model.product.backlogitem.BacklogItem;
 import co.vaughnvernon.actormodel.message.StringMessage;
 
@@ -18,12 +18,16 @@ public class Product extends BaseActor {
 		this.name = anInitializer.getParameter("name");
 	}
 
+	public void when(StringMessage aMessage) {
+		System.out.println("Product received: " + aMessage);
+	}
+
 	public void when(PlanBacklogItem aCommand) {
 		System.out.println("Product when(PlanBacklogItemCommand)");
 
 		ActorInitializer initializer = new ActorInitializer(this.registry());
 
-		initializer.putParameter("product", this);
+		initializer.putParameter("product", this.self());
 		initializer.putParameter("summary", aCommand.summary());
 		initializer.putParameter("story", aCommand.story());
 

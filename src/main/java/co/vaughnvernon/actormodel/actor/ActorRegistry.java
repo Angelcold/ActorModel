@@ -22,6 +22,13 @@ package co.vaughnvernon.actormodel.actor;
 public interface ActorRegistry extends ActorFinder {
 
 	/**
+	 * Answers an ActorAgent for anActor.
+	 * @param anActor the Actor for which to create an ActorAgent
+	 * @return ActorAgent
+	 */
+	public ActorAgent actorAgentFor(Actor anActor);
+
+	/**
 	 * Answers an ActorAgent for the new Actor of type anActorType.
 	 * @param anActorType the Class<? extends Actor> of the Actor to create
 	 * @return ActorAgent

@@ -85,6 +85,14 @@ public class KeyValueStoreActorRegistry
 	}
 
 	/**
+	 * @see co.vaughnvernon.actormodel.actor.ActorRegistry#actorAgentFor(co.vaughnvernon.actormodel.actor.Actor)
+	 */
+	@Override
+	public ActorAgent actorAgentFor(Actor anActor) {
+		return this.actorAgentFor(anActor.getClass(), anActor);
+	}
+
+	/**
 	 * @see com.shiftmethod.actup.actor.ActorRegistry#actorFor(java.lang.Class)
 	 */
 	public ActorAgent actorFor(Class<? extends Actor> anActorType) {
