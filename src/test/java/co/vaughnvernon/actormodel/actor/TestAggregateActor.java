@@ -21,7 +21,7 @@ import co.vaughnvernon.actormodel.message.TestMessage;
 import co.vaughnvernon.actormodel.message.TestRawThroughputCommand;
 
 
-public class TestAggregateActor extends AdaptiveTestActor {
+public class TestAggregateActor extends BaseActor {
 
 	// private int count = 1;
 	private boolean answered;
@@ -30,7 +30,7 @@ public class TestAggregateActor extends AdaptiveTestActor {
 	private boolean reactedTo;
 
 	public TestAggregateActor(ActorInitializer anInitializer) {
-		super((Address) anInitializer.address());
+		super(anInitializer);
 	}
 
 	@Override

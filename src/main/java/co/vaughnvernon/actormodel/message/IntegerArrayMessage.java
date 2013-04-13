@@ -14,18 +14,9 @@
 
 package co.vaughnvernon.actormodel.message;
 
-import java.util.Date;
+public class IntegerArrayMessage extends ArrayMessage<Integer> {
 
-public class TestRawThroughputCommand implements Command {
-
-	private Date occurredOn = new Date();
-
-	public TestRawThroughputCommand() {
-		super();
-	}
-
-	@Override
-	public Date occurredOn() {
-		return occurredOn;
+	public IntegerArrayMessage(Integer... aValue) {
+		super(aValue);
 	}
 }

@@ -14,18 +14,9 @@
 
 package co.vaughnvernon.actormodel.message;
 
-import java.util.Date;
+public class FloatMessage extends SimpleMessage<Float> {
 
-public class TestRawThroughputCommand implements Command {
-
-	private Date occurredOn = new Date();
-
-	public TestRawThroughputCommand() {
-		super();
-	}
-
-	@Override
-	public Date occurredOn() {
-		return occurredOn;
+	public FloatMessage(Float aValue) {
+		super(aValue);
 	}
 }

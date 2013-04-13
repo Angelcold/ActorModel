@@ -14,18 +14,43 @@
 
 package co.vaughnvernon.actormodel.message;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
-public class TestRawThroughputCommand implements Command {
+public class ArrayMessage<T> implements Message {
 
-	private Date occurredOn = new Date();
+	private Date occurredOn;
+	private List<T> values;
 
-	public TestRawThroughputCommand() {
+	@SafeVarargs
+	public ArrayMessage(final T... aValue) {
 		super();
+
+		this.occurredOn = new Date();
+		this.values = Arrays.asList(aValue);
+	}
+
+	public final List<T> asList() {
+		return Collections.unmodifiableList(this.values);
 	}
 
 	@Override
-	public Date occurredOn() {
-		return occurredOn;
+	public final Date occurredOn() {
+		return this.occurredOn;
+	}
+
+	public final T value() {
+		return this.values.get(0);
+	}
+
+	public final T value(int anIndex) {
+		return this.values.get(anIndex);
+	}
+
+	@SuppressWarnings("unchecked")
+	public final T[] values() {
+		return (T[]) this.values.toArray();
 	}
 }

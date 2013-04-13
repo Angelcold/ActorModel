@@ -14,18 +14,15 @@
 
 package co.vaughnvernon.actormodel.message;
 
-import java.util.Date;
+public class NullAnswer {
 
-public class TestRawThroughputCommand implements Command {
+	private static final NullAnswer nullAnswerInstance = new NullAnswer();
 
-	private Date occurredOn = new Date();
-
-	public TestRawThroughputCommand() {
-		super();
+	public static NullAnswer instance() {
+		return nullAnswerInstance;
 	}
 
-	@Override
-	public Date occurredOn() {
-		return occurredOn;
+	private NullAnswer() {
+		super();
 	}
 }

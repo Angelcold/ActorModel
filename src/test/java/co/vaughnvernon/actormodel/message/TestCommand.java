@@ -17,7 +17,9 @@ package co.vaughnvernon.actormodel.message;
 import java.util.Date;
 
 public class TestCommand implements Command {
+
 	private Date occurredOn = new Date();
+
 	public TestCommand() {
 		super();
 	}

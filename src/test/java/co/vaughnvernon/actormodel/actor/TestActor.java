@@ -18,7 +18,7 @@ import co.vaughnvernon.actormodel.message.Command;
 import co.vaughnvernon.actormodel.message.Event;
 import co.vaughnvernon.actormodel.message.Message;
 
-public class TestActor extends AdaptiveTestActor {
+public class TestActor extends BaseActor {
 
 	// private int count = 1;
 	private boolean answered;
@@ -27,7 +27,7 @@ public class TestActor extends AdaptiveTestActor {
 	private boolean reactedTo;
 
 	public TestActor(ActorInitializer anInitializer) {
-		super((Address) anInitializer.address());
+		super(anInitializer);
 	}
 
 	@Override

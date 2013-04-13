@@ -41,6 +41,8 @@ public class ActorInitializer {
 	/** My parameters, which hold all initialization parameters other than the Address. */
 	private Map<String, Object> parameters;
 
+	private ActorRegistry registry;
+
 	/**
 	 * Constructs my default state.
 	 * @param anActorRegistry the ActorRegistry
@@ -49,8 +51,8 @@ public class ActorInitializer {
 		super();
 
 		this.address = anActorRegistry.newAddress();
-
 		this.parameters = new HashMap<String,Object>();
+		this.registry = anActorRegistry;
 	}
 
 	/**
@@ -78,5 +80,13 @@ public class ActorInitializer {
 	 */
 	public void putParameter(String aName, Object aValue) {
 		this.parameters.put(aName, aValue);
+	}
+
+	/**
+	 * Answers my registry.
+	 * @return ActorRegistry
+	 */
+	public ActorRegistry registry() {
+		return this.registry;
 	}
 }

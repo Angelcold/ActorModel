@@ -71,9 +71,7 @@ public class LocalMailboxActorMessagingTest extends ActorTestCase {
 			}
 		});
 
-		this.stayAlive(100L);
-
-		System.out.println("-----------------------");
+		this.stayAlive(500L);
 
 		assertTrue(completed);
 	}
@@ -96,14 +94,13 @@ public class LocalMailboxActorMessagingTest extends ActorTestCase {
 
 		futureCountThread.close();
 
-		this.stayAlive(100L);
+		this.stayAlive(1000L);
 
 		long totalTime = new Date().getTime() - beforeReceive;
 
 		System.out.println("Total milliseconds: " + totalTime);
 		System.out.println("Ask count: " + futureCountThread.askCount());
 		System.out.println("Answer count: " + futureCountThread.answerCount());
-		System.out.println("-----------------------");
 
 		assertEquals(futureCountThread.askCount(), futureCountThread.answerCount());
 	}
@@ -136,7 +133,7 @@ public class LocalMailboxActorMessagingTest extends ActorTestCase {
 			threads[i].close();
 		}
 
-		this.stayAlive(100L);
+		this.stayAlive(500L);
 
 		long totalTime = new Date().getTime() - beforeReceive;
 
@@ -148,7 +145,6 @@ public class LocalMailboxActorMessagingTest extends ActorTestCase {
 		System.out.println("Total milliseconds: " + totalTime);
 		System.out.println("Ask count: " + askCounter + " Average/Second: " + (askCounter / (totalTime / 1000)));
 		System.out.println("Answer count: " + answerCounter + " Average/Second: " + (answerCounter / (totalTime / 1000)));
-		System.out.println("-----------------------");
 	}
 
 	public void testExecuteCommand() throws Exception {
@@ -160,9 +156,7 @@ public class LocalMailboxActorMessagingTest extends ActorTestCase {
 
 		agent.tell(new TestCommand());
 
-		this.stayAlive(100);
-
-		System.out.println("-----------------------");
+		this.stayAlive(500);
 	}
 
 	public void testExecuteWhenCommand() throws Exception {
@@ -175,8 +169,6 @@ public class LocalMailboxActorMessagingTest extends ActorTestCase {
 		agent.tell(new TestCommand());
 
 		this.stayAlive(100);
-
-		System.out.println("-----------------------");
 	}
 
 	public void testExecuteWhenCommandFor5Seconds() throws Exception {
@@ -197,14 +189,13 @@ public class LocalMailboxActorMessagingTest extends ActorTestCase {
 
 		rawMessageThroughput.close();
 
-		this.stayAlive(100L);
+		this.stayAlive(200L);
 
 		long totalTime = new Date().getTime() - beforeReceive;
 
 		System.out.println("Total milliseconds: " + totalTime);
 		System.out.println("Message count: " + rawMessageThroughput.messageCount()
 				+ " Average/Second: " + (rawMessageThroughput.messageCount() / (totalTime / 1000)));
-		System.out.println("-----------------------");
 
 		assertTrue(rawMessageThroughput.messageCount() >= 1000000);
 	}
@@ -218,9 +209,7 @@ public class LocalMailboxActorMessagingTest extends ActorTestCase {
 
 		agent.tell(new TestEvent());
 
-		this.stayAlive(100);
-
-		System.out.println("-----------------------");
+		this.stayAlive(200);
 	}
 
 	public void testExecuteWhenEvent() throws Exception {
@@ -232,9 +221,7 @@ public class LocalMailboxActorMessagingTest extends ActorTestCase {
 
 		agent.tell(new TestEvent());
 
-		this.stayAlive(100);
-
-		System.out.println("-----------------------");
+		this.stayAlive(200);
 	}
 
 	public void testExecuteMessage() throws Exception {
@@ -246,9 +233,7 @@ public class LocalMailboxActorMessagingTest extends ActorTestCase {
 
 		agent.tell(new TestMessage());
 
-		this.stayAlive(100);
-
-		System.out.println("-----------------------");
+		this.stayAlive(200);
 	}
 
 	public void testExecuteWhenMessage() throws Exception {
@@ -260,12 +245,17 @@ public class LocalMailboxActorMessagingTest extends ActorTestCase {
 
 		agent.tell(new TestMessage());
 
-		this.stayAlive(100);
-
-		System.out.println("-----------------------");
+		this.stayAlive(200);
 	}
 
-	public static class FutureCountThread extends Thread {
+	@Override
+	protected void tearDown() throws Exception {
+		System.out.println("-----------------------");
+
+		super.tearDown();
+	}
+
+	private static class FutureCountThread extends Thread {
 
 		private boolean closed;
 		private ActorAgent agent;
@@ -310,7 +300,7 @@ public class LocalMailboxActorMessagingTest extends ActorTestCase {
 		}
 	}
 
-	public static class RawMessageThoughputCountThread extends Thread {
+	private static class RawMessageThoughputCountThread extends Thread {
 
 		private boolean closed;
 		private ActorAgent agent;

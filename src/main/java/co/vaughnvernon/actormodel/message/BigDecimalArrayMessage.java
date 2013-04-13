@@ -14,18 +14,11 @@
 
 package co.vaughnvernon.actormodel.message;
 
-import java.util.Date;
+import java.math.BigDecimal;
 
-public class TestRawThroughputCommand implements Command {
+public class BigDecimalArrayMessage extends ArrayMessage<BigDecimal> {
 
-	private Date occurredOn = new Date();
-
-	public TestRawThroughputCommand() {
-		super();
-	}
-
-	@Override
-	public Date occurredOn() {
-		return occurredOn;
+	public BigDecimalArrayMessage(BigDecimal... aValue) {
+		super(aValue);
 	}
 }

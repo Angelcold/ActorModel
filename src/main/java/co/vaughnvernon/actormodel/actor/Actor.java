@@ -14,9 +14,23 @@
 
 package co.vaughnvernon.actormodel.actor;
 
+import co.vaughnvernon.actormodel.message.BigDecimalArrayMessage;
+import co.vaughnvernon.actormodel.message.BigDecimalMessage;
 import co.vaughnvernon.actormodel.message.Command;
+import co.vaughnvernon.actormodel.message.DoubleArrayMessage;
+import co.vaughnvernon.actormodel.message.DoubleMessage;
 import co.vaughnvernon.actormodel.message.Event;
+import co.vaughnvernon.actormodel.message.FloatArrayMessage;
+import co.vaughnvernon.actormodel.message.FloatMessage;
+import co.vaughnvernon.actormodel.message.IntegerArrayMessage;
+import co.vaughnvernon.actormodel.message.IntegerMessage;
+import co.vaughnvernon.actormodel.message.LongArrayMessage;
+import co.vaughnvernon.actormodel.message.LongMessage;
 import co.vaughnvernon.actormodel.message.Message;
+import co.vaughnvernon.actormodel.message.ShortArrayMessage;
+import co.vaughnvernon.actormodel.message.ShortMessage;
+import co.vaughnvernon.actormodel.message.StringArrayMessage;
+import co.vaughnvernon.actormodel.message.StringMessage;
 
 /**
  * Defines the interface for Actors allowing commands to be
@@ -64,6 +78,90 @@ public interface Actor {
 	 * @param aMessage the Message to react to
 	 */
 	public void reactTo(Message aMessage);
+
+	/**
+	 * Reacts to aMessage.
+	 * @param aMessage the BigDecimalMessage to react to
+	 */
+	public void reactTo(BigDecimalMessage aMessage);
+
+	/**
+	 * Reacts to aMessage.
+	 * @param aMessage the BigDecimalArrayMessage to react to
+	 */
+	public void reactTo(BigDecimalArrayMessage aMessage);
+
+	/**
+	 * Reacts to aMessage.
+	 * @param aMessage the DoubleMessage to react to
+	 */
+	public void reactTo(DoubleMessage aMessage);
+
+	/**
+	 * Reacts to aMessage.
+	 * @param aMessage the DoubleArrayMessage to react to
+	 */
+	public void reactTo(DoubleArrayMessage aMessage);
+
+	/**
+	 * Reacts to aMessage.
+	 * @param aMessage the FloatMessage to react to
+	 */
+	public void reactTo(FloatMessage aMessage);
+
+	/**
+	 * Reacts to aMessage.
+	 * @param aMessage the FloatArrayMessage to react to
+	 */
+	public void reactTo(FloatArrayMessage aMessage);
+
+	/**
+	 * Reacts to aMessage.
+	 * @param aMessage the IntegerMessage to react to
+	 */
+	public void reactTo(IntegerMessage aMessage);
+
+	/**
+	 * Reacts to aMessage.
+	 * @param aMessage the IntegerArrayMessage to react to
+	 */
+	public void reactTo(IntegerArrayMessage aMessage);
+
+	/**
+	 * Reacts to aMessage.
+	 * @param aMessage the LongMessage to react to
+	 */
+	public void reactTo(LongMessage aMessage);
+
+	/**
+	 * Reacts to aMessage.
+	 * @param aMessage the LongArrayMessage to react to
+	 */
+	public void reactTo(LongArrayMessage aMessage);
+
+	/**
+	 * Reacts to aMessage.
+	 * @param aMessage the ShortMessage to react to
+	 */
+	public void reactTo(ShortMessage aMessage);
+
+	/**
+	 * Reacts to aMessage.
+	 * @param aMessage the ShortArrayMessage to react to
+	 */
+	public void reactTo(ShortArrayMessage aMessage);
+
+	/**
+	 * Reacts to aMessage.
+	 * @param aMessage the StringMessage to react to
+	 */
+	public void reactTo(StringMessage aMessage);
+
+	/**
+	 * Reacts to aMessage.
+	 * @param aMessage the StringArrayMessage to react to
+	 */
+	public void reactTo(StringArrayMessage aMessage);
 
 	/**
 	 * Answers the ActorAgent for myself.

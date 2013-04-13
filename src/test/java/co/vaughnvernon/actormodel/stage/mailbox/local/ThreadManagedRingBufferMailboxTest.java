@@ -45,7 +45,7 @@ public class ThreadManagedRingBufferMailboxTest extends ActorTestCase {
 
 		mailbox.receive(new ByteArrayEnvelope(new byte[1]) {});
 
-		this.stayAlive(1L);
+		this.stayAlive(100L);
 
 		assertEquals(sentCount, receivedCount);
 	}
@@ -70,12 +70,11 @@ public class ThreadManagedRingBufferMailboxTest extends ActorTestCase {
 			mailbox.receive(new ByteArrayEnvelope(new byte[100]) {});
 		}
 
-		this.stayAlive(1000L);
+		this.stayAlive(2000L);
 
 		long totalTime = new Date().getTime() - beforeReceive;
 
 		System.out.println("Received: " + receivedCount + " in milliseconds: " + totalTime);
-		System.out.println("----------");
 
 		assertEquals(sentCount, receivedCount);
 	}
@@ -118,10 +117,16 @@ public class ThreadManagedRingBufferMailboxTest extends ActorTestCase {
 		System.out.println("Total time in milliseconds: " + totalTime);
 		System.out.println("Send count: " + sentCount + " Average/Second: " + (sentCount / millis * 1000L));
 		System.out.println("Receive count: " + receivedCount + " Average/Second: " + (receivedCount / millis * 1000L));
-		System.out.println("----------");
 	}
 
-	public static class MailboxSenderThread extends Thread {
+	@Override
+	protected void tearDown() throws Exception {
+		System.out.println("-----------------------");
+
+		super.tearDown();
+	}
+
+	private static class MailboxSenderThread extends Thread {
 
 		private Mailbox mailbox;
 		private int sendCount;

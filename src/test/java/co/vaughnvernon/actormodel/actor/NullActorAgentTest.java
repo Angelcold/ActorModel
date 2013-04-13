@@ -27,4 +27,11 @@ public class NullActorAgentTest extends TestCase {
 
 		assertNotNull(agent);
 	}
+
+	@Override
+	protected void tearDown() throws Exception {
+		System.out.println("-----------------------");
+
+		super.tearDown();
+	}
 }

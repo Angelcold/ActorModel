@@ -16,16 +16,24 @@ package co.vaughnvernon.actormodel.message;
 
 import java.util.Date;
 
-public class TestRawThroughputCommand implements Command {
+public class SimpleMessage<T> implements Message {
 
-	private Date occurredOn = new Date();
+	private Date occurredOn;
+	private T value;
 
-	public TestRawThroughputCommand() {
+	public SimpleMessage(T aValue) {
 		super();
+
+		this.occurredOn = new Date();
+		this.value = aValue;
 	}
 
 	@Override
-	public Date occurredOn() {
-		return occurredOn;
+	public final Date occurredOn() {
+		return this.occurredOn;
+	}
+
+	public final T value() {
+		return this.value;
 	}
 }

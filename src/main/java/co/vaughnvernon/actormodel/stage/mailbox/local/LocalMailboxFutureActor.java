@@ -14,39 +14,22 @@
 
 package co.vaughnvernon.actormodel.stage.mailbox.local;
 
-import co.vaughnvernon.actormodel.actor.Actor;
-import co.vaughnvernon.actormodel.actor.ActorAgent;
+import co.vaughnvernon.actormodel.actor.BaseActor;
 import co.vaughnvernon.actormodel.actor.ActorInitializer;
-import co.vaughnvernon.actormodel.actor.ActorRegistry;
-import co.vaughnvernon.actormodel.actor.Address;
 import co.vaughnvernon.actormodel.message.Command;
 import co.vaughnvernon.actormodel.message.Event;
 import co.vaughnvernon.actormodel.message.FutureValueMessage;
 import co.vaughnvernon.actormodel.message.Message;
 
-public class LocalMailboxFutureActor implements Actor {
+public class LocalMailboxFutureActor extends BaseActor {
 
-	private Address address;
-	private ActorRegistry actorRegistry;
 	private LocalMailboxFuture future;
 
 	public LocalMailboxFutureActor(
 			ActorInitializer anInitializer) {
-		super();
+		super(anInitializer);
 
-		this.address = anInitializer.address();
-		this.actorRegistry = anInitializer.getParameter("registry");
 		this.future = anInitializer.getParameter("future");
-	}
-
-	@Override
-	public Address address() {
-		return this.address;
-	}
-
-	@Override
-	public String actorType() {
-		return this.getClass().getName();
 	}
 
 	@Override
@@ -68,33 +51,16 @@ public class LocalMailboxFutureActor implements Actor {
 	public void reactTo(Message aMessage) {
 		this.future.setAnswer(((FutureValueMessage) aMessage).answer());
 
-		this.actorRegistry.deregister(this.future.sender());
+		this.registry().deregister(this.future.sender());
 
 		this.future.futureInterest().completedWith(this.future);
 	}
 
 	@Override
-	public ActorAgent self() {
-		return null;
-	}
-
-	@Override
-	public ActorAgent sender() {
-		return null;
-	}
-
-	@Override
 	public void start() {
-		// TODO
 	}
 
 	@Override
 	public void stop() {
-		// TODO
-	}
-
-	@Override
-	public boolean wantsSmartMessageDispatching() {
-		return false;
 	}
 }
