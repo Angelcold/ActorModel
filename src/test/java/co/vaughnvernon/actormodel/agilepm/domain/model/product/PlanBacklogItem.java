@@ -14,8 +14,8 @@ public class PlanBacklogItem implements Command {
 		super();
 
 		this.occurredOn = new Date();
-		this.setStory(aStory);
-		this.setSummary(aSummary);
+		this.story = aStory;
+		this.summary = aSummary;
 	}
 
 	@Override
@@ -28,14 +28,6 @@ public class PlanBacklogItem implements Command {
 	}
 
 	public String summary() {
-		return summary;
-	}
-
-	private void setStory(String aStory) {
-		this.story = aStory;
-	}
-
-	private void setSummary(String aSummary) {
-		this.summary = aSummary;
+		return this.summary;
 	}
 }

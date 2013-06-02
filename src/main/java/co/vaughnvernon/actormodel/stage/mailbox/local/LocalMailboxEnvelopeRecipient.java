@@ -62,7 +62,7 @@ public class LocalMailboxEnvelopeRecipient implements EnvelopeRecipient {
 
 		Actor actor = local.receiverAgent().actor();
 
-		if (actor.wantsSmartMessageDispatching()) {
+		if (actor.wantsFilteredDelivery()) {
 			this.dispatch(actor, message);
 		} else if (message instanceof Command) {
 			actor.execute((Command) message);

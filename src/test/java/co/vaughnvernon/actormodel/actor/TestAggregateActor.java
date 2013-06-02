@@ -81,7 +81,7 @@ public class TestAggregateActor extends BaseActor {
 	}
 
 	@Override
-	public boolean wantsSmartMessageDispatching() {
+	public boolean wantsFilteredDelivery() {
 		return true;
 	}
 }

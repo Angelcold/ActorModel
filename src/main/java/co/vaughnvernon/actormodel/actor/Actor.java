@@ -187,10 +187,10 @@ public interface Actor {
 
 	/**
 	 * Answers whether or not this Actor expects the Mailbox to deliver
-	 * Messages directly to the methods that handle that message type.
-	 * The pattern is that the Actor must define methods of the form:
+	 * Messages directly to the methods that handle that message type. If
+	 * true, the pattern is that the Actor must define methods of the form:
 	 * <br/><br/>when(ConcreteMessageType aMessage)
 	 * @return boolean
 	 */
-	public boolean wantsSmartMessageDispatching();
+	public boolean wantsFilteredDelivery();
 }

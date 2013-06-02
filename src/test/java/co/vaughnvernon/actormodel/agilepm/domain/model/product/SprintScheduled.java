@@ -12,24 +12,37 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-package co.vaughnvernon.actormodel.actor;
+package co.vaughnvernon.actormodel.agilepm.domain.model.product;
 
-import junit.framework.TestCase;
+import java.util.Date;
 
-public abstract class ActorTestCase extends TestCase {
+import co.vaughnvernon.actormodel.actor.Address;
+import co.vaughnvernon.actormodel.message.Event;
 
-	protected void stayAlive(long millis) {
-		try {
-			Thread.sleep(millis);
-		} catch (Exception e) {
-			// ignore
-		}
+public class SprintScheduled implements Event {
+
+	private Date occurredOn;
+	private Address product;
+	private Address sprint;
+
+	public SprintScheduled(Address aProduct, Address aSprint) {
+		super();
+
+		this.occurredOn = new Date();
+		this.product = aProduct;
+		this.sprint = aSprint;
 	}
 
 	@Override
-	protected void tearDown() throws Exception {
-		System.out.println("-----------------------");
+	public Date occurredOn() {
+		return this.occurredOn;
+	}
 
-		super.tearDown();
+	public Address product() {
+		return this.product;
+	}
+
+	public Address sprint() {
+		return this.sprint;
 	}
 }

@@ -12,24 +12,24 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-package co.vaughnvernon.actormodel.actor;
+package co.vaughnvernon.actormodel.agilepm.domain.model.product;
 
-import junit.framework.TestCase;
+import java.util.Date;
 
-public abstract class ActorTestCase extends TestCase {
+import co.vaughnvernon.actormodel.message.Message;
 
-	protected void stayAlive(long millis) {
-		try {
-			Thread.sleep(millis);
-		} catch (Exception e) {
-			// ignore
-		}
+public class GetBacklogItems implements Message {
+
+	private Date occurredOn;
+
+	public GetBacklogItems() {
+		super();
+
+		this.occurredOn = new Date();
 	}
 
 	@Override
-	protected void tearDown() throws Exception {
-		System.out.println("-----------------------");
-
-		super.tearDown();
+	public Date occurredOn() {
+		return this.occurredOn;
 	}
 }

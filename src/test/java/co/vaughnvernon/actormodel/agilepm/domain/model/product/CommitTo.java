@@ -12,24 +12,31 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-package co.vaughnvernon.actormodel.actor;
+package co.vaughnvernon.actormodel.agilepm.domain.model.product;
 
-import junit.framework.TestCase;
+import java.util.Date;
 
-public abstract class ActorTestCase extends TestCase {
+import co.vaughnvernon.actormodel.actor.Address;
+import co.vaughnvernon.actormodel.message.Command;
 
-	protected void stayAlive(long millis) {
-		try {
-			Thread.sleep(millis);
-		} catch (Exception e) {
-			// ignore
-		}
+public class CommitTo implements Command {
+
+	private Date occurredOn;
+	private Address sprint;
+
+	public CommitTo(Address aSprint) {
+		super();
+
+		this.occurredOn = new Date();
+		this.sprint = aSprint;
 	}
 
 	@Override
-	protected void tearDown() throws Exception {
-		System.out.println("-----------------------");
+	public Date occurredOn() {
+		return this.occurredOn;
+	}
 
-		super.tearDown();
+	public Address sprint() {
+		return this.sprint;
 	}
 }

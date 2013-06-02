@@ -77,7 +77,7 @@ public class TestActor extends BaseActor {
 	}
 
 	@Override
-	public boolean wantsSmartMessageDispatching() {
+	public boolean wantsFilteredDelivery() {
 		return false;
 	}
 }

@@ -237,10 +237,10 @@ public abstract class BaseActor implements Actor {
 	}
 
 	/**
-	 * @see co.vaughnvernon.actormodel.actor.Actor#wantsSmartMessageDispatching()
+	 * @see co.vaughnvernon.actormodel.actor.Actor#wantsFilteredDelivery()
 	 */
 	@Override
-	public boolean wantsSmartMessageDispatching() {
+	public boolean wantsFilteredDelivery() {
 		return false;
 	}
 

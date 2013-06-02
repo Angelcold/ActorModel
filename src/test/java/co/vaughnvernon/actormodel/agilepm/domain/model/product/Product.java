@@ -1,21 +1,42 @@
 package co.vaughnvernon.actormodel.agilepm.domain.model.product;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import co.vaughnvernon.actormodel.actor.ActorAgent;
 import co.vaughnvernon.actormodel.actor.ActorInitializer;
+import co.vaughnvernon.actormodel.actor.Address;
 import co.vaughnvernon.actormodel.actor.BaseActor;
 import co.vaughnvernon.actormodel.agilepm.domain.model.product.backlogitem.BacklogItem;
+import co.vaughnvernon.actormodel.agilepm.domain.model.product.backlogitem.BacklogItemPlanned;
 import co.vaughnvernon.actormodel.message.StringMessage;
 
 public class Product extends BaseActor {
 
-	private String description;
-	private String name;
+    private Set<Address> backlogItems;
+    private String description;
+    private String name;
 
 	public Product(ActorInitializer anInitializer) {
 		super(anInitializer.address(), anInitializer.registry());
 
+		this.backlogItems = new HashSet<Address>();
 		this.description = anInitializer.getParameter("description");
 		this.name = anInitializer.getParameter("name");
+	}
+
+	public void when(GetBacklogItems aMessage) {
+
+	}
+
+	public void when(BacklogItemPlanned anEvent) {
+		System.out.println("Product when(BacklogItemPlanned)");
+
+		this.backlogItems.add(anEvent.backlogItem());
+	}
+
+	public void when(GetSprintNamed aMessage) {
+
 	}
 
 	public void when(StringMessage aMessage) {
@@ -23,7 +44,7 @@ public class Product extends BaseActor {
 	}
 
 	public void when(PlanBacklogItem aCommand) {
-		System.out.println("Product when(PlanBacklogItemCommand)");
+		System.out.println("Product when(PlanBacklogItem)");
 
 		ActorInitializer initializer = new ActorInitializer(this.registry());
 
@@ -31,15 +52,33 @@ public class Product extends BaseActor {
 		initializer.putParameter("summary", aCommand.summary());
 		initializer.putParameter("story", aCommand.story());
 
-		ActorAgent backlogItem = this.registry().actorFor(BacklogItem.class, initializer);
+		this.registry().actorFor(BacklogItem.class, initializer);
+	}
 
-		backlogItem.tell(new StringMessage("Echo"));
+	public void when(ScheduleSprint aCommand) {
+		System.out.println("Product when(ScheduleSprint)");
 
-		System.out.println("Product: " + this.name() + " described as: " + this.description() + " told BacklogItem to echo.");
+		ActorInitializer initializer = new ActorInitializer(this.registry());
+
+		initializer.putParameter("product", this.self());
+		initializer.putParameter("name", aCommand.name());
+		initializer.putParameter("goals", aCommand.goals());
+		initializer.putParameter("begins", aCommand.begins());
+		initializer.putParameter("ends", aCommand.ends());
+
+		ActorAgent sprint = this.registry().actorFor(Sprint.class, initializer);
+
+		sprint.tell(new StringMessage("Echo"));
+
+		System.out.println("Product: " + this.name() + " described as: " + this.description() + " told Sprint to echo.");
+	}
+
+	public void when(SprintScheduled anEvent) {
+		System.out.println("Product when(SprintScheduled)");
 	}
 
 	@Override
-	public boolean wantsSmartMessageDispatching() {
+	public boolean wantsFilteredDelivery() {
 		return true;
 	}
 

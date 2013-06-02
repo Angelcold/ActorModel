@@ -4,7 +4,6 @@ import co.vaughnvernon.actormodel.actor.ActorAgent;
 import co.vaughnvernon.actormodel.actor.ActorInitializer;
 import co.vaughnvernon.actormodel.actor.BaseActor;
 import co.vaughnvernon.actormodel.message.Message;
-import co.vaughnvernon.actormodel.message.StringMessage;
 
 public class BacklogItem extends BaseActor {
 
@@ -17,16 +16,23 @@ public class BacklogItem extends BaseActor {
 		this.story = anInitializer.getParameter("story");
 		this.summary = anInitializer.getParameter("summary");
 
-		((ActorAgent)anInitializer.getParameter("product")).tell(new StringMessage("BacklogItem got your message."));
+		ActorAgent product = anInitializer.getParameter("product");
+
+		product.tell(new BacklogItemPlanned(product.address(), this.self().address()));
 	}
 
 	@Override
 	public void reactTo(Message aMessage) {
-		System.out.println("BLI: Summary=" + this.summary + " Story=" + this.story);
+		System.out.println(this.toString());
 	}
 
 	@Override
-	public boolean wantsSmartMessageDispatching() {
+	public boolean wantsFilteredDelivery() {
 		return false;
+	}
+
+	@Override
+	public String toString() {
+		return "BacklogItem [summary=" + summary + ", story=" + story + "]";
 	}
 }
