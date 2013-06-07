@@ -28,6 +28,7 @@ import co.vaughnvernon.actormodel.actor.ActorRegistry;
 import co.vaughnvernon.actormodel.actor.Address;
 import co.vaughnvernon.actormodel.actor.AddressFactory;
 import co.vaughnvernon.actormodel.actor.NullActorAgent;
+import co.vaughnvernon.actormodel.actor.Query;
 import co.vaughnvernon.actormodel.stage.mailbox.Mailbox;
 import co.vaughnvernon.actormodel.stage.mailbox.MailboxFactory;
 import co.vaughnvernon.actormodel.stage.persistence.KeyValueStore;
@@ -93,14 +94,14 @@ public class KeyValueStoreActorRegistry
 	}
 
 	/**
-	 * @see com.shiftmethod.actup.actor.ActorRegistry#actorFor(java.lang.Class)
+	 * @see co.vaughnvernon.actormodel.actup.actor.ActorRegistry#actorFor(java.lang.Class)
 	 */
 	public ActorAgent actorFor(Class<? extends Actor> anActorType) {
 		return this.actorFor(anActorType, new ActorInitializer(this));
 	}
 
 	/**
-	 * @see com.shiftmethod.actup.actor.ActorRegistry#actorFor(java.lang.Class, com.shiftmethod.actup.actor.ActorInitializer)
+	 * @see co.vaughnvernon.actormodel.actup.actor.ActorRegistry#actorFor(java.lang.Class, co.vaughnvernon.actormodel.actup.actor.ActorInitializer)
 	 */
 	public synchronized ActorAgent actorFor(Class<? extends Actor> anActorType, ActorInitializer anInitializer) {
 		Actor actor = null;
@@ -125,7 +126,7 @@ public class KeyValueStoreActorRegistry
 	}
 
 	/**
-	 * @see com.shiftmethod.actup.actor.ActorRegistry#actorRegisteredAs(java.lang.Class, com.shiftmethod.actup.actor.Address)
+	 * @see co.vaughnvernon.actormodel.actup.actor.ActorRegistry#actorRegisteredAs(java.lang.Class, co.vaughnvernon.actormodel.actup.actor.Address)
 	 */
 	public ActorAgent actorRegisteredAs(Class<? extends Actor> anActorType, Address anAddress) {
 		ActorAgent agent = null;
@@ -142,7 +143,7 @@ public class KeyValueStoreActorRegistry
 	}
 
 	/**
-	 * @see com.shiftmethod.actup.actor.ActorRegistry#deregister(com.shiftmethod.actup.actor.ActorAgent)
+	 * @see co.vaughnvernon.actormodel.actup.actor.ActorRegistry#deregister(co.vaughnvernon.actormodel.actup.actor.ActorAgent)
 	 */
 	@Override
 	public void deregister(ActorAgent anActorAgent) {
@@ -155,7 +156,7 @@ public class KeyValueStoreActorRegistry
 	}
 
 	/**
-	 * @see com.shiftmethod.actup.actor.ActorRegistry#newAddress()
+	 * @see co.vaughnvernon.actormodel.actup.actor.ActorRegistry#newAddress()
 	 */
 	@Override
 	public Address newAddress() {
@@ -163,7 +164,7 @@ public class KeyValueStoreActorRegistry
 	}
 
 	/**
-	 * @see com.shiftmethod.actup.actor.ActorRegistry#newActorInitializer()
+	 * @see co.vaughnvernon.actormodel.actup.actor.ActorRegistry#newActorInitializer()
 	 */
 	@Override
 	public ActorInitializer newActorInitializer() {
@@ -171,7 +172,7 @@ public class KeyValueStoreActorRegistry
 	}
 
 	/**
-	 * @see com.shiftmethod.actup.actor.ActorFinder#findActorBy(java.lang.Class, com.shiftmethod.actup.actor.Address)
+	 * @see co.vaughnvernon.actormodel.actup.actor.ActorFinder#findActorBy(java.lang.Class, co.vaughnvernon.actormodel.actup.actor.Address)
 	 */
 	@Override
 	public Actor findActorBy(
@@ -182,7 +183,30 @@ public class KeyValueStoreActorRegistry
 	}
 
 	/**
-	 * @see com.shiftmethod.actup.actor.ActorPersister#requiresValueUpdates()
+	 * @see co.vaughnvernon.actormodel.actor.ActorFinder#findActorAgentBy(java.lang.Class, co.vaughnvernon.actormodel.actor.Query)
+	 */
+	@Override
+	public ActorAgent findFirstMatching(
+			Class<? extends Actor> anActorType,
+			Query aQuery) {
+
+		ActorKeyValueTypeElement typeElement = this.typeElementFor(anActorType);
+
+		for (Actor actor : typeElement.store().values()) {
+			if (actor.matches(aQuery)) {
+				ActorAgent actorAgent =
+						this.actorAgentFactory()
+							.newActorAgentFor(this, anActorType, actor, typeElement.mailbox());
+
+				return actorAgent;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * @see co.vaughnvernon.actormodel.actup.actor.ActorPersister#requiresValueUpdates()
 	 */
 	@Override
 	public boolean requiresValueUpdates() {
@@ -190,7 +214,7 @@ public class KeyValueStoreActorRegistry
 	}
 
 	/**
-	 * @see com.shiftmethod.actup.actor.ActorPersister#store(com.shiftmethod.actup.actor.Actor)
+	 * @see co.vaughnvernon.actormodel.actup.actor.ActorPersister#store(co.vaughnvernon.actormodel.actup.actor.Actor)
 	 */
 	@Override
 	public void store(Actor anActor) {

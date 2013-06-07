@@ -29,4 +29,12 @@ public interface ActorFinder {
 	 * @return Actor
 	 */
 	public Actor findActorBy(Class<? extends Actor> anActorType, Address anAddress);
+
+	/**
+	 * Answers the first ActorAgent of anActorType matching aQuery.
+	 * @param anActorType the Class<? extends Actor> type of the Actor
+	 * @param aQuery the Query to run against each Actor
+	 * @return ActorAgent
+	 */
+	public ActorAgent findFirstMatching(Class<? extends Actor> anActorType, Query aQuery);
 }

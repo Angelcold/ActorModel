@@ -16,6 +16,7 @@ package co.vaughnvernon.actormodel.stage.mailbox.local;
 
 import co.vaughnvernon.actormodel.actor.BaseActor;
 import co.vaughnvernon.actormodel.actor.ActorInitializer;
+import co.vaughnvernon.actormodel.actor.Query;
 import co.vaughnvernon.actormodel.message.Command;
 import co.vaughnvernon.actormodel.message.Event;
 import co.vaughnvernon.actormodel.message.FutureValueMessage;
@@ -45,6 +46,11 @@ public class LocalMailboxFutureActor extends BaseActor {
 	@Override
 	public void handle(Event anEvent) {
 		throw new UnsupportedOperationException("Future actors do not handle events.");
+	}
+
+	@Override
+	public boolean matches(Query aQuery) {
+		return false;
 	}
 
 	@Override

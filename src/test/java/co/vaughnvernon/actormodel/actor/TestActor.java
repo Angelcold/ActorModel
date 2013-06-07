@@ -54,6 +54,11 @@ public class TestActor extends BaseActor {
 	}
 
 	@Override
+	public boolean matches(Query aQuery) {
+		return false; // not implemented
+	}
+
+	@Override
 	public void reactTo(Message aMessage) {
 		this.reactedTo = true;
 

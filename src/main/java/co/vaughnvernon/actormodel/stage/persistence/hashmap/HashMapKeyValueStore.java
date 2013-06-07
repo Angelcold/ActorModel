@@ -102,6 +102,11 @@ public class HashMapKeyValueStore implements KeyValueStore<String,Actor> {
 		return this.store().size();
 	}
 
+	@Override
+	public Collection<Actor> values() {
+		return this.store().values();
+	}
+
 	/**
 	 * Sets my name.
 	 * @param aName the String to set as my name

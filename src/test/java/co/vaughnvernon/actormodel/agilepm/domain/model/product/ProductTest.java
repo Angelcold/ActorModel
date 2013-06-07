@@ -1,16 +1,16 @@
 package co.vaughnvernon.actormodel.agilepm.domain.model.product;
 
 import java.util.Date;
-import java.util.List;
 
 import co.vaughnvernon.actormodel.actor.ActorAgent;
 import co.vaughnvernon.actormodel.actor.ActorInitializer;
 import co.vaughnvernon.actormodel.actor.ActorRegistry;
 import co.vaughnvernon.actormodel.actor.ActorTestCase;
-import co.vaughnvernon.actormodel.actor.Address;
+import co.vaughnvernon.actormodel.actor.Query;
 import co.vaughnvernon.actormodel.agilepm.domain.model.product.backlogitem.BacklogItem;
-import co.vaughnvernon.actormodel.future.Future;
-import co.vaughnvernon.actormodel.future.FutureInterest;
+import co.vaughnvernon.actormodel.agilepm.domain.model.product.backlogitem.CommitTo;
+import co.vaughnvernon.actormodel.agilepm.domain.model.product.sprint.Sprint;
+import co.vaughnvernon.actormodel.message.StringMessage;
 import co.vaughnvernon.actormodel.stage.KeyValueStoreActorRegistry;
 import co.vaughnvernon.actormodel.stage.address.UUIDActorAddressFactory;
 import co.vaughnvernon.actormodel.stage.mailbox.local.LocalMailboxActorAgentFactory;
@@ -80,33 +80,33 @@ public class ProductTest extends ActorTestCase {
 				this.daysFromNow(1),
 				this.daysFromNow(15)));
 
-		product.ask(new GetSprintNamed("Sprint 1"), new FutureInterest() {
-			@Override
-			public void completedWith(Future aFuture) {
-				final ActorAgent sprint = aFuture.value();
+		this.stayAlive(100L);
 
-				product.ask(new GetBacklogItems(), new FutureInterest() {
-					@Override
-					public void completedWith(Future aFuture) {
-						List<Address> backlogItems = aFuture.value();
+		ActorAgent sprint =
+				this.actorRegistry.findFirstMatching(
+						Sprint.class,
+						new Query("name", "Sprint 1"));
 
-						ActorAgent backlogItem = actorRegistry.actorRegisteredAs(BacklogItem.class, backlogItems.get(0));
+		assertNotNull(sprint);
 
-						backlogItem.tell(new CommitTo(sprint.address()));
-					}
-					@Override
-					public void timedOut(Future aFuture) {
-						System.out.println("Timed out GetBacklogItems");
-					}
-				});
-			}
-			@Override
-			public void timedOut(Future aFuture) {
-				System.out.println("Timed out GetSprintNamed");
-			}
-		});
+		this.stayAlive(100L);
+
+		ActorAgent backlogItem =
+				this.actorRegistry.findFirstMatching(
+						BacklogItem.class,
+						new Query("summary", "A summary of the backlog item."));
+
+		assertNotNull(backlogItem);
+
+		backlogItem.tell(new CommitTo(sprint.address()));
 
 		this.stayAlive(500L);
+
+		backlogItem.tell(new StringMessage("Echo"));
+
+		sprint.tell(new StringMessage("Echo"));
+
+		this.stayAlive(100L);
 	}
 
 	private Date daysFromNow(long aNumberOfDays) {

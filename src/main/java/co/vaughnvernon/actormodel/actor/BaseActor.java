@@ -85,6 +85,14 @@ public abstract class BaseActor implements Actor {
 	}
 
 	/**
+	 * @see co.vaughnvernon.actormodel.actor.Actor#matches(co.vaughnvernon.actormodel.actor.Query)
+	 */
+	@Override
+	public boolean matches(Query aQuery) {
+		return false; // override to implement
+	}
+
+	/**
 	 * @see co.vaughnvernon.actormodel.actor.Actor#reactTo(co.vaughnvernon.actormodel.message.Message)
 	 */
 	@Override

@@ -12,28 +12,40 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-package co.vaughnvernon.actormodel.agilepm.domain.model.product;
+package co.vaughnvernon.actormodel.agilepm.domain.model.product.backlogitem;
 
 import java.util.Date;
 
 import co.vaughnvernon.actormodel.actor.Address;
-import co.vaughnvernon.actormodel.message.Command;
+import co.vaughnvernon.actormodel.message.Event;
 
-public class CommitTo implements Command {
+public class BacklogItemCommitted implements Event {
 
+	private Address backlogItem;
 	private Date occurredOn;
+	private Address product;
 	private Address sprint;
 
-	public CommitTo(Address aSprint) {
+	public BacklogItemCommitted(Address aProduct, Address aBacklogItem, Address aSprint) {
 		super();
 
+		this.backlogItem = aBacklogItem;
 		this.occurredOn = new Date();
+		this.product = aProduct;
 		this.sprint = aSprint;
+	}
+
+	public Address backlogItem() {
+		return this.backlogItem;
 	}
 
 	@Override
 	public Date occurredOn() {
 		return this.occurredOn;
+	}
+
+	public Address product() {
+		return this.product;
 	}
 
 	public Address sprint() {

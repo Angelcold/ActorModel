@@ -12,24 +12,33 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-package co.vaughnvernon.actormodel.agilepm.domain.model.product;
+package co.vaughnvernon.actormodel.actor;
 
-import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
-import co.vaughnvernon.actormodel.message.Message;
+public class Query {
 
-public class GetBacklogItems implements Message {
+	private Map<String, Object> parameters;
 
-	private Date occurredOn;
-
-	public GetBacklogItems() {
+	public Query() {
 		super();
 
-		this.occurredOn = new Date();
+		this.parameters = new HashMap<String,Object>();
 	}
 
-	@Override
-	public Date occurredOn() {
-		return this.occurredOn;
+	public Query(String aName, Object aValue) {
+		this();
+
+		this.putParameter(aName, aValue);
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T> T getParameter(String aName) {
+		return (T) this.parameters.get(aName);
+	}
+
+	public void putParameter(String aName, Object aValue) {
+		this.parameters.put(aName, aValue);
 	}
 }

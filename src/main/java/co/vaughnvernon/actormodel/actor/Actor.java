@@ -74,6 +74,13 @@ public interface Actor {
 	public void handle(Event anEvent);
 
 	/**
+	 * Answers whether or not I match aQuery.
+	 * @param aQuery the Query to match
+	 * @return boolean
+	 */
+	public boolean matches(Query aQuery);
+
+	/**
 	 * Reacts to aMessage.
 	 * @param aMessage the Message to react to
 	 */

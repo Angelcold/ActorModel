@@ -1,42 +1,27 @@
 package co.vaughnvernon.actormodel.agilepm.domain.model.product;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import co.vaughnvernon.actormodel.actor.ActorAgent;
 import co.vaughnvernon.actormodel.actor.ActorInitializer;
-import co.vaughnvernon.actormodel.actor.Address;
 import co.vaughnvernon.actormodel.actor.BaseActor;
 import co.vaughnvernon.actormodel.agilepm.domain.model.product.backlogitem.BacklogItem;
 import co.vaughnvernon.actormodel.agilepm.domain.model.product.backlogitem.BacklogItemPlanned;
+import co.vaughnvernon.actormodel.agilepm.domain.model.product.sprint.Sprint;
 import co.vaughnvernon.actormodel.message.StringMessage;
 
 public class Product extends BaseActor {
 
-    private Set<Address> backlogItems;
     private String description;
     private String name;
 
 	public Product(ActorInitializer anInitializer) {
 		super(anInitializer.address(), anInitializer.registry());
 
-		this.backlogItems = new HashSet<Address>();
 		this.description = anInitializer.getParameter("description");
 		this.name = anInitializer.getParameter("name");
 	}
 
-	public void when(GetBacklogItems aMessage) {
-
-	}
-
 	public void when(BacklogItemPlanned anEvent) {
 		System.out.println("Product when(BacklogItemPlanned)");
-
-		this.backlogItems.add(anEvent.backlogItem());
-	}
-
-	public void when(GetSprintNamed aMessage) {
-
 	}
 
 	public void when(StringMessage aMessage) {
@@ -52,7 +37,9 @@ public class Product extends BaseActor {
 		initializer.putParameter("summary", aCommand.summary());
 		initializer.putParameter("story", aCommand.story());
 
-		this.registry().actorFor(BacklogItem.class, initializer);
+		ActorAgent backlogItem = this.registry().actorFor(BacklogItem.class, initializer);
+
+		backlogItem.tell(new StringMessage("Echo"));
 	}
 
 	public void when(ScheduleSprint aCommand) {

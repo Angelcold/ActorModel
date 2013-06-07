@@ -101,4 +101,11 @@ public interface KeyValueStore<K,V> {
 	 * @return long
 	 */
     public long size();
+
+    /**
+     * Answers the Collection of all values in my store.
+     * @return Collection<V>
+     */
+    public Collection<V> values();
+
 }

@@ -12,30 +12,31 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-package co.vaughnvernon.actormodel.agilepm.domain.model.product;
+package co.vaughnvernon.actormodel.agilepm.domain.model.product.backlogitem;
 
 import java.util.Date;
 
-import co.vaughnvernon.actormodel.message.Message;
+import co.vaughnvernon.actormodel.actor.Address;
+import co.vaughnvernon.actormodel.message.Command;
 
-public class GetSprintNamed implements Message {
+public class CommitTo implements Command {
 
-	private String name;
 	private Date occurredOn;
+	private Address sprint;
 
-	public GetSprintNamed(String aName) {
+	public CommitTo(Address aSprint) {
 		super();
 
-		this.name = aName;
 		this.occurredOn = new Date();
-	}
-
-	public String name() {
-		return this.name;
+		this.sprint = aSprint;
 	}
 
 	@Override
 	public Date occurredOn() {
 		return this.occurredOn;
+	}
+
+	public Address sprint() {
+		return this.sprint;
 	}
 }
