@@ -47,7 +47,7 @@ public class LocalMailboxActorMessagingTest extends ActorTestCase {
 					.instance(
 							new UUIDActorAddressFactory(),
 							new LocalMailboxActorAgentFactory(),
-							new LocalMailboxFactory(),
+							new LocalMailboxFactory(true),
 							new HashMapKeyValueStoreFactory());
 	}
 

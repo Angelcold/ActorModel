@@ -4,13 +4,13 @@ import java.util.Date;
 
 import co.vaughnvernon.actormodel.actor.ActorAgent;
 import co.vaughnvernon.actormodel.actor.ActorInitializer;
-import co.vaughnvernon.actormodel.actor.ActorRegistry;
 import co.vaughnvernon.actormodel.actor.ActorTestCase;
 import co.vaughnvernon.actormodel.actor.Query;
 import co.vaughnvernon.actormodel.agilepm.domain.model.product.backlogitem.BacklogItem;
+import co.vaughnvernon.actormodel.agilepm.domain.model.product.backlogitem.BacklogItemCommitted;
+import co.vaughnvernon.actormodel.agilepm.domain.model.product.backlogitem.BacklogItemPlanned;
 import co.vaughnvernon.actormodel.agilepm.domain.model.product.backlogitem.CommitTo;
 import co.vaughnvernon.actormodel.agilepm.domain.model.product.sprint.Sprint;
-import co.vaughnvernon.actormodel.message.StringMessage;
 import co.vaughnvernon.actormodel.stage.KeyValueStoreActorRegistry;
 import co.vaughnvernon.actormodel.stage.address.UUIDActorAddressFactory;
 import co.vaughnvernon.actormodel.stage.mailbox.local.LocalMailboxActorAgentFactory;
@@ -18,8 +18,6 @@ import co.vaughnvernon.actormodel.stage.mailbox.local.LocalMailboxFactory;
 import co.vaughnvernon.actormodel.stage.persistence.hashmap.HashMapKeyValueStoreFactory;
 
 public class ProductTest extends ActorTestCase {
-
-	private ActorRegistry actorRegistry;
 
 	public ProductTest() {
 		super();
@@ -29,7 +27,7 @@ public class ProductTest extends ActorTestCase {
 					.instance(
 							new UUIDActorAddressFactory(),
 							new LocalMailboxActorAgentFactory(),
-							new LocalMailboxFactory(),
+							new LocalMailboxFactory(true),
 							new HashMapKeyValueStoreFactory());
 	}
 
@@ -44,7 +42,11 @@ public class ProductTest extends ActorTestCase {
 				"A summary of the backlog item.",
 				"A story about the backlog item."));
 
-		this.stayAlive(500L);
+		this.stayAlive();
+
+		this.actorRegistry.expectedMessages(2);
+		this.actorRegistry.expectedMessage(PlanBacklogItem.class);
+		this.actorRegistry.expectedMessage(BacklogItemPlanned.class);
 	}
 
 	public void testProductScheduleSprint() throws Exception {
@@ -60,7 +62,11 @@ public class ProductTest extends ActorTestCase {
 				this.daysFromNow(1),
 				this.daysFromNow(15)));
 
-		this.stayAlive(500L);
+		this.stayAlive();
+
+		this.actorRegistry.expectedMessages(2);
+		this.actorRegistry.expectedMessage(ScheduleSprint.class);
+		this.actorRegistry.expectedMessage(SprintScheduled.class);
 	}
 
 	public void testCommitBacklogItemToSprint() throws Exception {
@@ -80,7 +86,7 @@ public class ProductTest extends ActorTestCase {
 				this.daysFromNow(1),
 				this.daysFromNow(15)));
 
-		this.stayAlive(100L);
+		this.yield();
 
 		ActorAgent sprint =
 				this.actorRegistry.findFirstMatching(
@@ -88,8 +94,6 @@ public class ProductTest extends ActorTestCase {
 						new Query("name", "Sprint 1"));
 
 		assertNotNull(sprint);
-
-		this.stayAlive(100L);
 
 		ActorAgent backlogItem =
 				this.actorRegistry.findFirstMatching(
@@ -100,13 +104,15 @@ public class ProductTest extends ActorTestCase {
 
 		backlogItem.tell(new CommitTo(sprint.address()));
 
-		this.stayAlive(500L);
+		this.stayAlive();
 
-		backlogItem.tell(new StringMessage("Echo"));
-
-		sprint.tell(new StringMessage("Echo"));
-
-		this.stayAlive(100L);
+		this.actorRegistry.expectedMessages(6);
+		this.actorRegistry.expectedMessage(PlanBacklogItem.class);
+		this.actorRegistry.expectedMessage(BacklogItemPlanned.class);
+		this.actorRegistry.expectedMessage(ScheduleSprint.class);
+		this.actorRegistry.expectedMessage(SprintScheduled.class);
+		this.actorRegistry.expectedMessage(CommitTo.class);
+		this.actorRegistry.expectedMessage(BacklogItemCommitted.class);
 	}
 
 	private Date daysFromNow(long aNumberOfDays) {

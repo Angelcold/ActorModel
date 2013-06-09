@@ -82,7 +82,7 @@ public class ThreadManagedRingBufferMailbox extends Thread implements Mailbox {
 	}
 
 	/**
-	 * @see com.shiftmethod.actup.stage.mailbox.Mailbox#name()
+	 * @see co.vaughnvernon.actormodel.stage.mailbox.Mailbox#name()
 	 */
 	@Override
 	public String name() {
@@ -90,7 +90,7 @@ public class ThreadManagedRingBufferMailbox extends Thread implements Mailbox {
 	}
 
 	/**
-	 * @see com.shiftmethod.actup.stage.mailbox.Mailbox#receive(com.shiftmethod.actup.stage.ByteArrayEnvelope)
+	 * @see co.vaughnvernon.actormodel.stage.mailbox.Mailbox#receive(co.vaughnvernon.actormodel.stage.mailbox.Envelope)
 	 */
 	@Override
 	public void receive(Envelope anEnvelope) {
@@ -123,7 +123,7 @@ public class ThreadManagedRingBufferMailbox extends Thread implements Mailbox {
 	}
 
 	/**
-	 * @see com.shiftmethod.actup.stage.mailbox.Mailbox#close()
+	 * @see co.vaughnvernon.actormodel.stage.mailbox.Mailbox#close()
 	 */
 	@Override
 	public void close() {
@@ -149,6 +149,7 @@ public class ThreadManagedRingBufferMailbox extends Thread implements Mailbox {
 					} catch (Exception e) {
 						// TODO
 						System.out.println("Mailbox Error: RECIPIENT: " + e.getMessage());
+						e.printStackTrace(System.out);
 					}
 
 					this.incrementOutIndex();

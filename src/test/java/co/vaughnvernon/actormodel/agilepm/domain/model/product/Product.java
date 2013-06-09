@@ -1,12 +1,10 @@
 package co.vaughnvernon.actormodel.agilepm.domain.model.product;
 
-import co.vaughnvernon.actormodel.actor.ActorAgent;
 import co.vaughnvernon.actormodel.actor.ActorInitializer;
 import co.vaughnvernon.actormodel.actor.BaseActor;
 import co.vaughnvernon.actormodel.agilepm.domain.model.product.backlogitem.BacklogItem;
 import co.vaughnvernon.actormodel.agilepm.domain.model.product.backlogitem.BacklogItemPlanned;
 import co.vaughnvernon.actormodel.agilepm.domain.model.product.sprint.Sprint;
-import co.vaughnvernon.actormodel.message.StringMessage;
 
 public class Product extends BaseActor {
 
@@ -21,30 +19,20 @@ public class Product extends BaseActor {
 	}
 
 	public void when(BacklogItemPlanned anEvent) {
-		System.out.println("Product when(BacklogItemPlanned)");
-	}
 
-	public void when(StringMessage aMessage) {
-		System.out.println("Product received: " + aMessage);
 	}
 
 	public void when(PlanBacklogItem aCommand) {
-		System.out.println("Product when(PlanBacklogItem)");
-
 		ActorInitializer initializer = new ActorInitializer(this.registry());
 
 		initializer.putParameter("product", this.self());
 		initializer.putParameter("summary", aCommand.summary());
 		initializer.putParameter("story", aCommand.story());
 
-		ActorAgent backlogItem = this.registry().actorFor(BacklogItem.class, initializer);
-
-		backlogItem.tell(new StringMessage("Echo"));
+		this.registry().actorFor(BacklogItem.class, initializer);
 	}
 
 	public void when(ScheduleSprint aCommand) {
-		System.out.println("Product when(ScheduleSprint)");
-
 		ActorInitializer initializer = new ActorInitializer(this.registry());
 
 		initializer.putParameter("product", this.self());
@@ -53,15 +41,10 @@ public class Product extends BaseActor {
 		initializer.putParameter("begins", aCommand.begins());
 		initializer.putParameter("ends", aCommand.ends());
 
-		ActorAgent sprint = this.registry().actorFor(Sprint.class, initializer);
-
-		sprint.tell(new StringMessage("Echo"));
-
-		System.out.println("Product: " + this.name() + " described as: " + this.description() + " told Sprint to echo.");
+		this.registry().actorFor(Sprint.class, initializer);
 	}
 
 	public void when(SprintScheduled anEvent) {
-		System.out.println("Product when(SprintScheduled)");
 	}
 
 	@Override
@@ -69,10 +52,17 @@ public class Product extends BaseActor {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "Product [name=" + name + ", description=" + description + "]";
+	}
+
+	@SuppressWarnings("unused")
 	private String description() {
 		return this.description;
 	}
 
+	@SuppressWarnings("unused")
 	private String name() {
 		return this.name;
 	}

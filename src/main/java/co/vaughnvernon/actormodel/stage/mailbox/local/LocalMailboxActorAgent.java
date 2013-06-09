@@ -64,7 +64,7 @@ public class LocalMailboxActorAgent implements ActorAgent {
 	}
 
 	/**
-	 * @see com.shiftmethod.actup.actor.ActorAgent#actor()
+	 * @see co.vaughnvernon.actormodel.actor.ActorAgent#actor()
 	 */
 	@Override
 	public Actor actor() {

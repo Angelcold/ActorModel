@@ -18,6 +18,12 @@ import junit.framework.TestCase;
 
 public abstract class ActorTestCase extends TestCase {
 
+	protected ActorRegistry actorRegistry;
+
+	protected void stayAlive() {
+		this.stayAlive(300L);
+	}
+
 	protected void stayAlive(long millis) {
 		try {
 			Thread.sleep(millis);
@@ -26,9 +32,26 @@ public abstract class ActorTestCase extends TestCase {
 		}
 	}
 
+	protected void yield() {
+		try {
+			Thread.sleep(100L);
+		} catch (Exception e) {
+			// ignore
+		}
+	}
+
+	@Override
+	protected void setUp() throws Exception {
+		assertNotNull(this.actorRegistry);
+
+		this.actorRegistry.expectedMessages(0);
+
+		super.setUp();
+	}
+
 	@Override
 	protected void tearDown() throws Exception {
-		System.out.println("-----------------------");
+		this.actorRegistry.shutDown();
 
 		super.tearDown();
 	}

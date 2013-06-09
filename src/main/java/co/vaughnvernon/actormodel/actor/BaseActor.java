@@ -28,6 +28,7 @@ import co.vaughnvernon.actormodel.message.LongArrayMessage;
 import co.vaughnvernon.actormodel.message.LongMessage;
 import co.vaughnvernon.actormodel.message.Message;
 import co.vaughnvernon.actormodel.message.NullAnswer;
+import co.vaughnvernon.actormodel.message.PrintMessage;
 import co.vaughnvernon.actormodel.message.ShortArrayMessage;
 import co.vaughnvernon.actormodel.message.ShortMessage;
 import co.vaughnvernon.actormodel.message.StringArrayMessage;
@@ -250,6 +251,16 @@ public abstract class BaseActor implements Actor {
 	@Override
 	public boolean wantsFilteredDelivery() {
 		return false;
+	}
+
+	public void when(PrintMessage aMessage) {
+		String heading = aMessage.value();
+
+		if (heading == null) {
+			heading = "";
+		}
+
+		System.out.println(heading + this.toString());
 	}
 
 	protected BaseActor(Address anAddress, ActorRegistry anActorRegistry) {

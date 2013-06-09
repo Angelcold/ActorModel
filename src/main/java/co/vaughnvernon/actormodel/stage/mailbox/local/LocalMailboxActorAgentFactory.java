@@ -35,11 +35,11 @@ public class LocalMailboxActorAgentFactory implements ActorAgentFactory {
 	}
 
 	/**
-	 * @see com.shiftmethod.actup.actor.ActorAgentFactory#newActorAgentFor(
-	 *      com.shiftmethod.actup.actor.ActorRegistry,
+	 * @see co.vaughnvernon.actormodel.actor.ActorAgentFactory#newActorAgentFor(
+	 *      co.vaughnvernon.actormodel.actor.ActorRegistry,
 	 * 		java.lang.Class,
-	 * 		com.shiftmethod.actup.actor.Actor,
-	 *      com.shiftmethod.actup.stage.mailbox.Mailbox)
+	 * 		co.vaughnvernon.actormodel.actor.Actor,
+	 *      co.vaughnvernon.actormodel.stage.mailbox.Mailbox)
 	 */
 	@Override
 	public ActorAgent newActorAgentFor(

@@ -15,6 +15,8 @@
 package co.vaughnvernon.actormodel.stage;
 
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -29,6 +31,7 @@ import co.vaughnvernon.actormodel.actor.Address;
 import co.vaughnvernon.actormodel.actor.AddressFactory;
 import co.vaughnvernon.actormodel.actor.NullActorAgent;
 import co.vaughnvernon.actormodel.actor.Query;
+import co.vaughnvernon.actormodel.message.Message;
 import co.vaughnvernon.actormodel.stage.mailbox.Mailbox;
 import co.vaughnvernon.actormodel.stage.mailbox.MailboxFactory;
 import co.vaughnvernon.actormodel.stage.persistence.KeyValueStore;
@@ -60,6 +63,9 @@ public class KeyValueStoreActorRegistry
 	/** My mailboxFactory. */
 	private MailboxFactory mailboxFactory;
 
+	/** My messageLog. */
+	private List<Message> messageLog;
+
 	/**
 	 * Answers my singleton instance.
 	 * @param anAddressFactory the AddressFactory
@@ -73,6 +79,7 @@ public class KeyValueStoreActorRegistry
 			ActorAgentFactory anActorAgentFactory,
 			MailboxFactory aMailboxFactory,
 			KeyValueStoreFactory<String,Actor> aKeyValueStoreFactory) {
+
 		if (registry == null) {
 			registry =
 					new KeyValueStoreActorRegistry(
@@ -94,14 +101,14 @@ public class KeyValueStoreActorRegistry
 	}
 
 	/**
-	 * @see co.vaughnvernon.actormodel.actup.actor.ActorRegistry#actorFor(java.lang.Class)
+	 * @see co.vaughnvernon.actormodel.actor.ActorRegistry#actorFor(java.lang.Class)
 	 */
 	public ActorAgent actorFor(Class<? extends Actor> anActorType) {
 		return this.actorFor(anActorType, new ActorInitializer(this));
 	}
 
 	/**
-	 * @see co.vaughnvernon.actormodel.actup.actor.ActorRegistry#actorFor(java.lang.Class, co.vaughnvernon.actormodel.actup.actor.ActorInitializer)
+	 * @see co.vaughnvernon.actormodel.actor.ActorRegistry#actorFor(java.lang.Class, co.vaughnvernon.actormodel.actor.ActorInitializer)
 	 */
 	public synchronized ActorAgent actorFor(Class<? extends Actor> anActorType, ActorInitializer anInitializer) {
 		Actor actor = null;
@@ -126,7 +133,7 @@ public class KeyValueStoreActorRegistry
 	}
 
 	/**
-	 * @see co.vaughnvernon.actormodel.actup.actor.ActorRegistry#actorRegisteredAs(java.lang.Class, co.vaughnvernon.actormodel.actup.actor.Address)
+	 * @see co.vaughnvernon.actormodel.actor.ActorRegistry#actorRegisteredAs(java.lang.Class, co.vaughnvernon.actormodel.actor.Address)
 	 */
 	public ActorAgent actorRegisteredAs(Class<? extends Actor> anActorType, Address anAddress) {
 		ActorAgent agent = null;
@@ -143,7 +150,7 @@ public class KeyValueStoreActorRegistry
 	}
 
 	/**
-	 * @see co.vaughnvernon.actormodel.actup.actor.ActorRegistry#deregister(co.vaughnvernon.actormodel.actup.actor.ActorAgent)
+	 * @see co.vaughnvernon.actormodel.actor.ActorRegistry#deregister(co.vaughnvernon.actormodel.actor.ActorAgent)
 	 */
 	@Override
 	public void deregister(ActorAgent anActorAgent) {
@@ -156,7 +163,55 @@ public class KeyValueStoreActorRegistry
 	}
 
 	/**
-	 * @see co.vaughnvernon.actormodel.actup.actor.ActorRegistry#newAddress()
+	 * @see co.vaughnvernon.actormodel.actor.ActorRegistry#expectedMessage(java.lang.Class)
+	 */
+	@Override
+    public void expectedMessage(Class<? extends Message> aMessageType) {
+        this.expectedMessage(aMessageType, 1);
+    }
+
+	/**
+	 * @see co.vaughnvernon.actormodel.actor.ActorRegistry#expectedMessage(java.lang.Class, int)
+	 */
+	@Override
+    public void expectedMessage(Class<? extends Message> aMessageType, int aTotal) {
+        int count = 0;
+
+        for (Message message : this.messageLog) {
+            if (message.getClass() == aMessageType) {
+                ++count;
+            }
+        }
+
+        if (count != aTotal) {
+            throw new IllegalStateException("Expected " + aTotal + " " + aMessageType.getSimpleName() + " messages, but logged "
+                    + this.messageLog.size() + " messages: " + this.messageLog);
+        }
+    }
+
+	/**
+	 * @see co.vaughnvernon.actormodel.actor.ActorRegistry#expectedMessages(int)
+	 */
+	@Override
+    public void expectedMessages(int aTotal) {
+        if (this.messageLog.size() != aTotal) {
+            throw new IllegalStateException("Expected " + aTotal + " messages, but logged " + this.messageLog.size()
+                    + " events: " + this.messageLog);
+        }
+    }
+
+	/**
+	 * @see co.vaughnvernon.actormodel.actor.ActorRegistry#log(co.vaughnvernon.actormodel.message.Message)
+	 */
+	@Override
+	public void log(Message aMessage) {
+		synchronized (this.messageLog) {
+			this.messageLog.add(aMessage);
+		}
+	}
+
+	/**
+	 * @see co.vaughnvernon.actormodel.actor.ActorRegistry#newAddress()
 	 */
 	@Override
 	public Address newAddress() {
@@ -164,7 +219,7 @@ public class KeyValueStoreActorRegistry
 	}
 
 	/**
-	 * @see co.vaughnvernon.actormodel.actup.actor.ActorRegistry#newActorInitializer()
+	 * @see co.vaughnvernon.actormodel.actor.ActorRegistry#newActorInitializer()
 	 */
 	@Override
 	public ActorInitializer newActorInitializer() {
@@ -172,7 +227,19 @@ public class KeyValueStoreActorRegistry
 	}
 
 	/**
-	 * @see co.vaughnvernon.actormodel.actup.actor.ActorFinder#findActorBy(java.lang.Class, co.vaughnvernon.actormodel.actup.actor.Address)
+	 * @see co.vaughnvernon.actormodel.actor.ActorRegistry#shutDown()
+	 */
+	@Override
+	public void shutDown() {
+		// TODO: do full shut down
+
+		this.messageLog.clear();
+
+		registry = null;
+	}
+
+	/**
+	 * @see co.vaughnvernon.actormodel.actor.ActorFinder#findActorBy(java.lang.Class, co.vaughnvernon.actormodel.actor.Address)
 	 */
 	@Override
 	public Actor findActorBy(
@@ -206,7 +273,7 @@ public class KeyValueStoreActorRegistry
 	}
 
 	/**
-	 * @see co.vaughnvernon.actormodel.actup.actor.ActorPersister#requiresValueUpdates()
+	 * @see co.vaughnvernon.actormodel.actor.ActorPersister#requiresValueUpdates()
 	 */
 	@Override
 	public boolean requiresValueUpdates() {
@@ -214,7 +281,7 @@ public class KeyValueStoreActorRegistry
 	}
 
 	/**
-	 * @see co.vaughnvernon.actormodel.actup.actor.ActorPersister#store(co.vaughnvernon.actormodel.actup.actor.Actor)
+	 * @see co.vaughnvernon.actormodel.actor.ActorPersister#store(co.vaughnvernon.actormodel.actor.Actor)
 	 */
 	@Override
 	public void store(Actor anActor) {
@@ -343,8 +410,9 @@ public class KeyValueStoreActorRegistry
 		this.setAddressFactory(anAddressFactory);
 		this.setActorAgentFactory(anActorAgentFactory);
 		this.setActorTypeElements(new ConcurrentHashMap<String, ActorKeyValueTypeElement>());
-		this.setMailboxFactory(aMailboxFactory);
 		this.setKeyValueStoreFactory(aKeyValueStoreFactory);
+		this.setMailboxFactory(aMailboxFactory);
+		this.messageLog = new ArrayList<Message>();
 	}
 
 	/**

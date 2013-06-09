@@ -25,7 +25,6 @@ import co.vaughnvernon.actormodel.actor.BaseActor;
 import co.vaughnvernon.actormodel.actor.Query;
 import co.vaughnvernon.actormodel.agilepm.domain.model.product.SprintScheduled;
 import co.vaughnvernon.actormodel.agilepm.domain.model.product.backlogitem.BacklogItemCommitted;
-import co.vaughnvernon.actormodel.message.StringMessage;
 
 public class Sprint extends BaseActor {
 
@@ -54,8 +53,6 @@ public class Sprint extends BaseActor {
 
 	@Override
 	public boolean matches(Query aQuery) {
-		System.out.println("Matches: name: " + this.name + " == " + aQuery.getParameter("name"));
-
 		if (this.name.equals(aQuery.getParameter("name"))) {
 			return true;
 		}
@@ -69,13 +66,7 @@ public class Sprint extends BaseActor {
 	}
 
 	public void when(BacklogItemCommitted anEvent) {
-		System.out.println("Sprint when(BacklogItemCommitted)");
-
 		this.committedBacklogItems.add(anEvent.backlogItem());
-	}
-
-	public void when(StringMessage aMessage) {
-		System.out.println(this.toString());
 	}
 
 	@Override

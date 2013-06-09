@@ -21,6 +21,7 @@ import java.util.Map;
 
 import co.vaughnvernon.actormodel.actor.Actor;
 import co.vaughnvernon.actormodel.actor.ActorPersister;
+import co.vaughnvernon.actormodel.actor.ActorRegistry;
 import co.vaughnvernon.actormodel.message.Command;
 import co.vaughnvernon.actormodel.message.Event;
 import co.vaughnvernon.actormodel.message.FutureValueMessage;
@@ -31,6 +32,7 @@ import co.vaughnvernon.actormodel.stage.mailbox.LocalMessageEnvelope;
 
 /**
  * I implement an EnvelopeRecipient for local Mailbox instances.
+ * There is one EnvelopeRecipient for each Actor type.
  *
  * @author Vaughn Vernon
  */
@@ -38,21 +40,28 @@ public class LocalMailboxEnvelopeRecipient implements EnvelopeRecipient {
 
 	private static final String WHEN_METHOD_NAME = "when";
 
-	private static Map<String, Method> whenMethods = new HashMap<String, Method>();
-
 	private ActorPersister actorPersister;
+	private ActorRegistry actorRegistry;
+	private boolean tracingMessages;
+	private Map<String, Method> whenMethods = new HashMap<String, Method>();
 
 	/**
 	 * Initialize my default state.
 	 */
-	public LocalMailboxEnvelopeRecipient(final ActorPersister anActorPersister) {
+	public LocalMailboxEnvelopeRecipient(
+			final ActorRegistry anActorRegistry,
+			final ActorPersister anActorPersister,
+			boolean isTracingMessages) {
+
 		super();
 
-		this.setActorPersister(anActorPersister);
+		this.actorPersister = anActorPersister;
+		this.actorRegistry = anActorRegistry;
+		this.tracingMessages = isTracingMessages;
 	}
 
 	/**
-	 * @see com.shiftmethod.actup.stage.mailbox.EnvelopeRecipient#receive(com.shiftmethod.actup.stage.mailbox.Envelope)
+	 * @see co.vaughnvernon.actormodel.stage.mailbox.EnvelopeRecipient#receive(co.vaughnvernon.actormodel.stage.mailbox.Envelope)
 	 */
 	@Override
 	public void receive(Envelope anEnvelope) throws Exception {
@@ -62,91 +71,98 @@ public class LocalMailboxEnvelopeRecipient implements EnvelopeRecipient {
 
 		Actor actor = local.receiverAgent().actor();
 
+		boolean asking = local.isAsking();
+
+		boolean stores = true;
+
 		if (actor.wantsFilteredDelivery()) {
-			this.dispatch(actor, message);
+			Object answer = this.dispatch(actor, message, asking);
+
+			if (asking) {
+				local.senderAgent().tell(new FutureValueMessage(answer));
+			}
 		} else if (message instanceof Command) {
 			actor.execute((Command) message);
-			this.store(actor);
 		} else if (message instanceof Event) {
 			actor.handle((Event) message);
-			this.store(actor);
 		} else {
-			if (local.isAsking()) {
+			if (asking) {
+				stores = false; // by convention, asking does not modify the actor
 				Object answer = actor.answer(message);
-				// by convention, asking does not modify the actor
 				local.senderAgent().tell(new FutureValueMessage(answer));
 			} else {
 				actor.reactTo(message);
-				this.store(actor);
 			}
+		}
+
+		if (tracingMessages) {
+			this.actorRegistry.log(message);
+		}
+
+		if (stores) {
+			this.store(actor);
 		}
 	}
 
 	/**
 	 * Answers my actorPersister.
-	 *
 	 * @return ActorPersister
 	 */
 	private ActorPersister actorPersister() {
 		return this.actorPersister;
 	}
 
-	/**
-	 * Sets my actorPersister.
-	 *
-	 * @param anActorPersister
-	 *            the ActorPersister to set as my actorPersister
-	 */
-	private void setActorPersister(ActorPersister anActorPersister) {
-		this.actorPersister = anActorPersister;
-	}
-
-	private Method cacheWhenMethodFor(String aKey,
+	private Method cacheWhenMethodFor(
+			String aKey,
 			Class<? extends Actor> anActorType,
 			Class<? extends Message> aMessageType) {
 
-		synchronized (whenMethods) {
-			try {
-				Method method = this.publicOrHiddenMethod(anActorType,
-						aMessageType);
+		try {
+			Method method = this.publicOrHiddenMethod(anActorType, aMessageType);
 
-				method.setAccessible(true);
+			method.setAccessible(true);
 
-				whenMethods.put(aKey, method);
+			whenMethods.put(aKey, method);
 
-				return method;
+			return method;
 
-			} catch (Exception e) {
-				throw new IllegalArgumentException(
-							"Actor does not understand "
-									+ WHEN_METHOD_NAME
-									+ "("
-									+ aMessageType.getSimpleName()
-									+ ") because: "
-									+ e.getClass().getSimpleName()
-									+ ">>>"
-									+ e.getMessage(),
-							e);
-			}
+		} catch (Exception e) {
+			throw new IllegalArgumentException(
+						"Actor does not understand "
+								+ WHEN_METHOD_NAME
+								+ "("
+								+ aMessageType.getSimpleName()
+								+ ") because: "
+								+ e.getClass().getSimpleName()
+								+ ">>>"
+								+ e.getMessage(),
+						e);
 		}
 	}
 
-	private void dispatch(Actor anActor, Message aMessage) {
+	private Object dispatch(Actor anActor, Message aMessage, boolean isAsking) {
+		Object answer = null;
 
 		Class<? extends Actor> actorType = anActor.getClass();
 
 		Class<? extends Message> messageType = aMessage.getClass();
 
-		String key = actorType.getName() + ":" + messageType.getName();
+		String key = messageType.getName();
 
-		Method whenMethod = whenMethods.get(key);
+		Method whenMethod = null;
 
-		if (whenMethod == null) {
-			whenMethod = this.cacheWhenMethodFor(key, actorType, messageType);
+		synchronized (whenMethods) {
+
+			whenMethod = whenMethods.get(key);
+
+			if (whenMethod == null) {
+				whenMethod = this.cacheWhenMethodFor(key, actorType, messageType);
+			}
 		}
 
 		try {
-			whenMethod.invoke(anActor, aMessage);
+
+			answer = whenMethod.invoke(anActor, aMessage);
 
 		} catch (InvocationTargetException e) {
 			if (e.getCause() != null) {
@@ -179,9 +195,12 @@ public class LocalMailboxEnvelopeRecipient implements EnvelopeRecipient {
 								+ e.getMessage(),
 						e);
 		}
+
+		return answer;
 	}
 
-	private Method publicOrHiddenMethod(Class<? extends Actor> anActorType,
+	private Method publicOrHiddenMethod(
+			Class<? extends Actor> anActorType,
 			Class<? extends Message> aMessageType) throws Exception {
 
 		Method method = null;
@@ -196,8 +215,7 @@ public class LocalMailboxEnvelopeRecipient implements EnvelopeRecipient {
 
 			// then protected or private...
 
-			method = anActorType.getDeclaredMethod(WHEN_METHOD_NAME,
-					aMessageType);
+			method = anActorType.getDeclaredMethod(WHEN_METHOD_NAME, aMessageType);
 		}
 
 		return method;

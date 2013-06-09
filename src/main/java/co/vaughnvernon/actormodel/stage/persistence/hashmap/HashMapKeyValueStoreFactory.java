@@ -33,7 +33,7 @@ public class HashMapKeyValueStoreFactory implements KeyValueStoreFactory<String,
 	}
 
 	/**
-	 * @see com.shiftmethod.actup.stage.persistence.KeyValueStoreFactory#newKeyValueStore(java.lang.String)
+	 * @see co.vaughnvernon.actormodel.stage.persistence.KeyValueStoreFactory#newKeyValueStore(java.lang.String)
 	 */
 	@Override
 	public KeyValueStore<String, Actor> newKeyValueStore(String aKeyValueStoreName) {
@@ -41,7 +41,7 @@ public class HashMapKeyValueStoreFactory implements KeyValueStoreFactory<String,
 	}
 
 	/**
-	 * @see com.shiftmethod.actup.stage.persistence.KeyValueStoreFactory#requiresValueUpdates()
+	 * @see co.vaughnvernon.actormodel.stage.persistence.KeyValueStoreFactory#requiresValueUpdates()
 	 */
 	@Override
 	public boolean requiresValueUpdates() {

@@ -49,7 +49,7 @@ public class LocalMessageEnvelope implements Envelope {
 	}
 
 	/**
-	 * @see com.shiftmethod.actup.stage.mailbox.Envelope#delivered()
+	 * @see co.vaughnvernon.actormodel.stage.mailbox.Envelope#delivered()
 	 */
 	@Override
 	public void delivered() {
@@ -57,7 +57,7 @@ public class LocalMessageEnvelope implements Envelope {
 	}
 
 	/**
-	 * @see com.shiftmethod.actup.stage.mailbox.Envelope#isDelivered()
+	 * @see co.vaughnvernon.actormodel.stage.mailbox.Envelope#isDelivered()
 	 */
 	@Override
 	public boolean isDelivered() {
@@ -65,7 +65,7 @@ public class LocalMessageEnvelope implements Envelope {
 	}
 
 	/**
-	 * @see com.shiftmethod.actup.stage.mailbox.Envelope#length()
+	 * @see co.vaughnvernon.actormodel.stage.mailbox.Envelope#length()
 	 */
 	@Override
 	public int length() {
@@ -73,7 +73,7 @@ public class LocalMessageEnvelope implements Envelope {
 	}
 
 	/**
-	 * @see com.shiftmethod.actup.stage.mailbox.Envelope#message()
+	 * @see co.vaughnvernon.actormodel.stage.mailbox.Envelope#message()
 	 */
 	@Override
 	public Message message() {
@@ -81,7 +81,7 @@ public class LocalMessageEnvelope implements Envelope {
 	}
 
 	/**
-	 * @see com.shiftmethod.actup.stage.mailbox.Envelope#messageAsBytes()
+	 * @see co.vaughnvernon.actormodel.stage.mailbox.Envelope#messageAsBytes()
 	 */
 	@Override
 	public byte[] messageAsBytes() {

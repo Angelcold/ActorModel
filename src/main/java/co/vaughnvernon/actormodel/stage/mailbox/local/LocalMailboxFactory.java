@@ -21,25 +21,30 @@ import co.vaughnvernon.actormodel.stage.mailbox.Mailbox;
 import co.vaughnvernon.actormodel.stage.mailbox.MailboxFactory;
 
 /**
- * I implement a MailboxFactory for creating ThreadManagedRingBufferMailbox instances.
+ * I implement a MailboxFactory for creating ThreadManagedRingBufferMailbox
+ * instances. I assume that one Mailbox is created per type.
  *
  * @author Vaughn Vernon
  */
 public class LocalMailboxFactory implements MailboxFactory {
 
+	private boolean tracingMessages;
+
 	/**
 	 * Initializes my default state.
 	 */
-	public LocalMailboxFactory() {
+	public LocalMailboxFactory(boolean isTracingMessages) {
 		super();
+
+		this.tracingMessages = isTracingMessages;
 	}
 
 	/**
-	 * @see com.shiftmethod.actup.stage.mailbox.MailboxFactory#newMailboxFor(
+	 * @see co.vaughnvernon.actormodel.stage.mailbox.MailboxFactory#newMailboxFor(
 	 * 		java.lang.String,
-	 *      com.shiftmethod.actup.actor.ActorRegistry,
-	 *      com.shiftmethod.actup.actor.ActorPersister,
-	 *      com.shiftmethod.actup.actor.ActorFinder)
+	 *      co.vaughnvernon.actormodel.actor.ActorRegistry,
+	 *      co.vaughnvernon.actormodel.actor.ActorPersister,
+	 *      co.vaughnvernon.actormodel.actor.ActorFinder)
 	 */
 	@Override
 	public Mailbox newMailboxFor(
@@ -54,6 +59,9 @@ public class LocalMailboxFactory implements MailboxFactory {
 				anActorTypeName,
 				4096,
 				30,
-				new LocalMailboxEnvelopeRecipient(anActorPersister));
+				new LocalMailboxEnvelopeRecipient(
+						anActorRegistry,
+						anActorPersister,
+						this.tracingMessages));
 	}
 }
